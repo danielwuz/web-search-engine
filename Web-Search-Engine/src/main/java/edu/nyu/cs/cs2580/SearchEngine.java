@@ -4,31 +4,30 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
-import com.sun.net.httpserver.Headers;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
+import org.apache.log4j.Logger;
+
 import com.sun.net.httpserver.HttpServer;
 
 public class SearchEngine {
-  // @CS2580: please use a port number 258XX, where XX corresponds
-  // to your group number.
-  public static void main(String[] args) throws IOException {
-    // Create the server.
-    if (args.length < 2){
-      System.out.println("arguments for this program are: [PORT] [PATH-TO-CORPUS]");
-      return;
-    }
-    int port = Integer.parseInt(args[0]);
-    String index_path = args[1];
-    InetSocketAddress addr = new InetSocketAddress(port);
-    HttpServer server = HttpServer.create(addr, -1);
+	private static Logger _log = Logger.getLogger(SearchEngine.class);
 
-    Ranker ranker = new Ranker(index_path);
-    
-    // Attach specific paths to their handlers.
-    server.createContext("/", new QueryHandler(ranker));
-    server.setExecutor(Executors.newCachedThreadPool());
-    server.start();
-    System.out.println("Listening on port: " + Integer.toString(port));
-  }
+	// @CS2580: please use a port number 258XX, where XX corresponds
+	// to your group number.
+	public static void main(String[] args) throws IOException {
+		// Create the server.
+		if (args.length < 2) {
+			_log.error("arguments for this program are: [PORT] [PATH-TO-CORPUS]");
+			return;
+		}
+		int port = Integer.parseInt(args[0]);
+		String index_path = args[1];
+		InetSocketAddress addr = new InetSocketAddress(port);
+		HttpServer server = HttpServer.create(addr, -1);
+
+		// Attach specific paths to their handlers.
+		server.createContext("/", new QueryHandler(index_path));
+		server.setExecutor(Executors.newCachedThreadPool());
+		server.start();
+		_log.info("Listening on port: " + Integer.toString(port));
+	}
 }
