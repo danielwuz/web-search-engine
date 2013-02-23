@@ -2,11 +2,11 @@ package edu.nyu.cs.cs2580;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
@@ -28,17 +28,6 @@ class QueryHandler implements HttpHandler {
 		this.rankerFactory = RankerFactory.instance(index_path);
 	}
 
-	public static Map<String, String> getQueryMap(String query) {
-		String[] params = query.split("&");
-		Map<String, String> map = new HashMap<String, String>();
-		for (String param : params) {
-			String name = param.split("=")[0];
-			String value = param.split("=")[1];
-			map.put(name, value);
-		}
-		return map;
-	}
-
 	public void handle(HttpExchange exchange) throws IOException {
 		String requestMethod = exchange.getRequestMethod();
 		if (!requestMethod.equalsIgnoreCase("GET")) { // GET requests only.
@@ -52,41 +41,90 @@ class QueryHandler implements HttpHandler {
 			_log.debug(key + ":" + requestHeaders.get(key) + "; ");
 		}
 		String queryResponse = "";
-		String uriQuery = exchange.getRequestURI().getQuery();
-		String uriPath = exchange.getRequestURI().getPath();
 
-		if ((uriPath != null) && (uriQuery != null)) {
-			if (uriPath.equals("/search")) {
-				Map<String, String> query_map = getQueryMap(uriQuery);
-				Set<String> keys = query_map.keySet();
-				if (keys.contains("query")) {
-					String ranker_type = query_map.get("ranker");
-					// Invoke different ranking functions
-					Ranker _ranker = rankerFactory.create(ranker_type);
-					Vector<ScoredDocument> sds = _ranker.runquery(query_map
-							.get("query"));
-					Iterator<ScoredDocument> itr = sds.iterator();
-					while (itr.hasNext()) {
-						ScoredDocument sd = itr.next();
-						if (queryResponse.length() > 0) {
-							queryResponse = queryResponse + "\n";
-						}
-						queryResponse = queryResponse + query_map.get("query")
-								+ "\t" + sd.asString();
-					}
-					if (queryResponse.length() > 0) {
-						queryResponse = queryResponse + "\n";
-					}
-				}
-			}
+		QueryParams query_map = new QueryParams(exchange);
+		if (query_map.searchable()) {
+			Ranker _ranker = query_map.getRanker();
+			// Invoke different ranking functions
+			String query = query_map.getQuery();
+			List<ScoredDocument> sds = _ranker.runquery(query);
+			Collections.sort(sds);
+			queryResponse += convertToString(query, sds);
 		}
 
 		// Construct a simple response.
 		Headers responseHeaders = exchange.getResponseHeaders();
 		responseHeaders.set("Content-Type", "text/plain");
 		exchange.sendResponseHeaders(200, 0); // arbitrary number of bytes
-		OutputStream responseBody = exchange.getResponseBody();
-		responseBody.write(queryResponse.getBytes());
-		responseBody.close();
+		OutputStream output = query_map.getOutput();
+		output.write(queryResponse.getBytes());
+		output.close();
+	}
+
+	private String convertToString(String query, List<ScoredDocument> sds) {
+		StringBuffer buffer = new StringBuffer();
+		Iterator<ScoredDocument> itr = sds.iterator();
+		while (itr.hasNext()) {
+			ScoredDocument sd = itr.next();
+			buffer.append(query + "\t" + sd.asString());
+			buffer.append("\n");
+		}
+		return buffer.toString();
+	}
+
+	private class QueryParams {
+
+		private HttpExchange exchange;
+
+		private Map<String, String> query_map = new HashMap<String, String>();
+
+		public QueryParams(HttpExchange exchange) {
+			this.exchange = exchange;
+			String uriQuery = exchange.getRequestURI().getQuery();
+			this.setQueryMap(uriQuery);
+		}
+
+		public boolean searchable() {
+			String uriQuery = exchange.getRequestURI().getQuery();
+			String uriPath = exchange.getRequestURI().getPath();
+			return (uriPath != null) && (uriQuery != null)
+					&& uriPath.equals("/search");
+		}
+
+		public boolean outputHTML() {
+			String os = query_map.get("format");
+			return "html".equals(os);
+		}
+
+		public OutputStream getOutput() {
+			if (this.outputHTML()) {
+				return exchange.getResponseBody();
+			}
+			return System.out;
+		}
+
+		public Ranker getRanker() {
+			String rankerType = query_map.get("ranker");
+			return rankerFactory.create(rankerType);
+		}
+
+		public String getQuery() {
+			return query_map.get("query");
+		}
+
+		private Map<String, String> setQueryMap(String query) {
+			// default value
+			query_map.put("query", "test");
+			query_map.put("ranker", "simple");
+			query_map.put("format", "html");
+			// value from HTTP request
+			String[] params = query.split("&");
+			for (String param : params) {
+				String name = param.split("=")[0];
+				String value = param.split("=")[1];
+				query_map.put(name, value);
+			}
+			return query_map;
+		}
 	}
 }

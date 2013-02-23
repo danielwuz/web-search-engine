@@ -1,10 +1,10 @@
 package edu.nyu.cs.cs2580;
 
 // @CS2580: this class should not be changed.
-public class ScoredDocument {
+public class ScoredDocument implements Comparable<ScoredDocument> {
 	public int _did;
 	public String _title;
-	public double _score;
+	public Double _score;
 
 	public ScoredDocument(int did, String title, double score) {
 		_did = did;
@@ -14,13 +14,24 @@ public class ScoredDocument {
 
 	String asString() {
 		return new String(Integer.toString(_did) + "\t" + _title + "\t"
-				+ Double.toString(_score));
+				+ _score);
 	}
 
 	@Override
 	public String toString() {
 		return "ScoredDocument [_did=" + _did + ", _title=" + _title
 				+ ", _score=" + _score + "]";
+	}
+
+	@Override
+	public int compareTo(ScoredDocument o) {
+		if (this._score > o._score) {
+			return -1;
+		} else if (this._score < o._score) {
+			return 1;
+		} else {
+			return 0;
+		}
 	}
 
 }
