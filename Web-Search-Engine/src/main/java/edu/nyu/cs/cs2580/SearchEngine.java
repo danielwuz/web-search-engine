@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
 
+import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Logger;
 
 import com.sun.net.httpserver.HttpServer;
@@ -19,6 +20,7 @@ public class SearchEngine {
 			_log.error("arguments for this program are: [PORT] [PATH-TO-CORPUS]");
 			return;
 		}
+		BasicConfigurator.configure();
 		int port = Integer.parseInt(args[0]);
 		String index_path = args[1];
 		InetSocketAddress addr = new InetSocketAddress(port);

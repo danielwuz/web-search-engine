@@ -12,8 +12,8 @@ public abstract class AbstractRanker implements Ranker {
 
 	private Index _index;
 
-	public AbstractRanker(String index_source) {
-		_index = new Index(index_source);
+	public AbstractRanker(Index index_source) {
+		this._index = index_source;
 	}
 
 	public Vector<ScoredDocument> runquery(String query) {
@@ -27,12 +27,9 @@ public abstract class AbstractRanker implements Ranker {
 		return retrieval_results;
 	}
 
-	protected abstract ScoredDocument runquery(Vector<String> query,
-			Document doc);
-
 	private Vector<String> buildQuery(String query) {
 		// Build query vector
-		Scanner s = new Scanner(query);
+		Scanner s = new Scanner(query).useDelimiter("\\+");
 		Vector<String> qv = new Vector<String>();
 		while (s.hasNext()) {
 			String term = s.next();
@@ -41,4 +38,9 @@ public abstract class AbstractRanker implements Ranker {
 		s.close();
 		return qv;
 	}
+
+	public int numDocs() {
+		return this._index.numDocs();
+	}
+
 }

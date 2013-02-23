@@ -3,6 +3,7 @@ package edu.nyu.cs.cs2580.ranker;
 import java.util.Vector;
 
 import edu.nyu.cs.cs2580.Document;
+import edu.nyu.cs.cs2580.Index;
 import edu.nyu.cs.cs2580.ScoredDocument;
 
 /**
@@ -14,7 +15,7 @@ import edu.nyu.cs.cs2580.ScoredDocument;
  */
 public class SimpleRanker extends AbstractRanker {
 
-	public SimpleRanker(String index_source) {
+	public SimpleRanker(Index index_source) {
 		super(index_source);
 	}
 

@@ -6,7 +6,11 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
-public class Index implements Iterable<Document>{
+import org.apache.log4j.Logger;
+
+public class Index implements Iterable<Document> {
+
+	private static Logger _log = Logger.getLogger(Index.class);
 
 	// documents in corpus
 	public Vector<Document> _documents;
@@ -15,7 +19,7 @@ public class Index implements Iterable<Document>{
 	 * Constructor with corpus path
 	 */
 	public Index(String index_source) {
-		System.out.println("Indexing documents ...");
+		_log.debug("Indexing documents ...");
 
 		_documents = new Vector<Document>();
 		try {
@@ -33,10 +37,9 @@ public class Index implements Iterable<Document>{
 				reader.close();
 			}
 		} catch (IOException ioe) {
-			System.err.println("Oops " + ioe.getMessage());
+			_log.error("Oops " + ioe.getMessage());
 		}
-		System.out.println("Done indexing "
-				+ Integer.toString(_documents.size()) + " documents...");
+		_log.debug("Done indexing " + _documents.size() + " documents...");
 	}
 
 	public int documentFrequency(String s) {

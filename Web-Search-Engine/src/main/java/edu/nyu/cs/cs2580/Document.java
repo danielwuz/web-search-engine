@@ -22,7 +22,10 @@ public class Document {
 	// <K,V> = <word, frequency in corpus>
 	private static HashMap<Integer, Integer> _tf = new HashMap<Integer, Integer>();
 
-	// document length
+	// <K,V> = <word, natural term freq in current document>
+	private HashMap<Integer, Integer> _ntf = new HashMap<Integer, Integer>();
+
+	// whole collection size
 	private static int _total_tf = 0;
 
 	private Vector<Integer> _body;
@@ -55,6 +58,8 @@ public class Document {
 		readTermVector(s.next(), _body);
 
 		HashSet<Integer> unique_terms = new HashSet<Integer>();
+		//only use body vector
+		/*
 		for (int i = 0; i < _title.size(); ++i) {
 			int idx = _title.get(i);
 			unique_terms.add(idx);
@@ -63,6 +68,7 @@ public class Document {
 			_tf.put(idx, old_tf + 1);
 			_total_tf++;
 		}
+		*/
 		for (int i = 0; i < _body.size(); ++i) {
 			int idx = _body.get(i);
 			unique_terms.add(idx);
@@ -70,6 +76,14 @@ public class Document {
 			int old_tf = _tf.get(idx);
 			_tf.put(idx, old_tf + 1);
 			_total_tf++;
+		}
+		// natural term frequency
+		for (int i = 0; i < _body.size(); ++i) {
+			int idx = _body.get(i);
+			// count ntf
+			Integer old_ntf = _ntf.get(idx);
+			old_ntf = (old_ntf == null) ? 0 : old_ntf;
+			_ntf.put(idx, old_ntf + 1);
 		}
 		for (Integer idx : unique_terms) {
 			if (_df.containsKey(idx)) {
@@ -136,5 +150,36 @@ public class Document {
 		}
 		s.close();
 		return;
+	}
+
+	/**
+	 * If corpus contains given word
+	 * 
+	 * @param term
+	 *            word
+	 * @return true if given word is in collection, otherwise return false;
+	 */
+	public static boolean contains(String term) {
+		return _dictionary.containsKey(term);
+	}
+
+	@Override
+	public String toString() {
+		return "Document [_docid=" + _docid + ", _titleString=" + _titleString
+				+ ", _numviews=" + _numviews + "]";
+	}
+
+	public int getBodyLength() {
+		return _body.size();
+	}
+
+	public int getNaturalTermFreq(String term) {
+		// if current document doesn't contain term
+		if (!Document.contains(term)) {
+			return 0;
+		}
+		int index = _dictionary.get(term);
+		Integer ntf = _ntf.get(index);
+		return (ntf == null) ? 0 : ntf;
 	}
 }

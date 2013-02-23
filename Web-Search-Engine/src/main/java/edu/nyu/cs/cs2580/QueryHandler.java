@@ -19,15 +19,13 @@ import edu.nyu.cs.cs2580.ranker.RankerFactory;
 
 class QueryHandler implements HttpHandler {
 	private Logger _log = Logger.getLogger(QueryHandler.class);
-	
+
 	private static String plainResponse = "Request received, but I am not smart enough to echo yet!\n";
 
-	private Ranker _ranker;
-
-	private String index_path;
+	private RankerFactory rankerFactory;
 
 	public QueryHandler(String index_path) {
-		this.index_path = index_path;
+		this.rankerFactory = RankerFactory.instance(index_path);
 	}
 
 	public static Map<String, String> getQueryMap(String query) {
@@ -64,15 +62,17 @@ class QueryHandler implements HttpHandler {
 				if (keys.contains("query")) {
 					String ranker_type = query_map.get("ranker");
 					// Invoke different ranking functions
-					_ranker = new RankerFactory(index_path).create(ranker_type);
-					Vector<ScoredDocument> sds = _ranker.runquery(query_map.get("query"));
+					Ranker _ranker = rankerFactory.create(ranker_type);
+					Vector<ScoredDocument> sds = _ranker.runquery(query_map
+							.get("query"));
 					Iterator<ScoredDocument> itr = sds.iterator();
 					while (itr.hasNext()) {
 						ScoredDocument sd = itr.next();
 						if (queryResponse.length() > 0) {
 							queryResponse = queryResponse + "\n";
 						}
-						queryResponse = queryResponse + query_map.get("query") + "\t" + sd.asString();
+						queryResponse = queryResponse + query_map.get("query")
+								+ "\t" + sd.asString();
 					}
 					if (queryResponse.length() > 0) {
 						queryResponse = queryResponse + "\n";
