@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580;
+package edu.nyu.cs.cs2580.indexer;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Vector;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import edu.nyu.cs.cs2580.doc.Document;
 
 public class Index implements Iterable<Document> {
 
-	private static Logger _log = Logger.getLogger(Index.class);
+	private static Logger _log = LogManager.getLogger(Index.class);
 
 	// documents in corpus
 	public Vector<Document> _documents;

@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580;
+package edu.nyu.cs.cs2580.doc;
 
 // @CS2580: this class should not be changed.
 public class ScoredDocument implements Comparable<ScoredDocument> {
@@ -12,7 +12,7 @@ public class ScoredDocument implements Comparable<ScoredDocument> {
 		_score = score;
 	}
 
-	String asString() {
+	public String asString() {
 		return new String(Integer.toString(_did) + "\t" + _title + "\t"
 				+ _score);
 	}

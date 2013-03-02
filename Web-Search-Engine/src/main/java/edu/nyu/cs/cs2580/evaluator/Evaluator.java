@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580;
+package edu.nyu.cs.cs2580.evaluator;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,12 +7,12 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 class Evaluator {
 
-	private static Logger _logger = Logger.getLogger(Evaluator.class);
+	private static Logger _logger = LogManager.getLogger(Evaluator.class);
 
 	private HashMap<String, HashMap<Integer, Double>> relevance_judgments = new HashMap<String, HashMap<Integer, Double>>();
 
@@ -32,7 +32,6 @@ class Evaluator {
 			return;
 		}
 		String p = args[0];
-		BasicConfigurator.configure();
 		Evaluator e = new Evaluator(p);
 		e.eval();
 	}
@@ -40,8 +39,18 @@ class Evaluator {
 	private void eval() {
 		// now evaluate the results from stdin
 		// evaluate k = 1
-		int K = 1;
-		evaluateStdin(K);
+		{
+			int K = 1;
+			evaluateStdin(K);
+		}
+		{
+			int K = 5;
+			evaluateStdin(K);
+		}
+		{
+			int K = 10;
+			evaluateStdin(K);
+		}
 	}
 
 	private void readRelevanceJudgments() {
@@ -121,7 +130,9 @@ class Evaluator {
 				}
 			}
 			double recall = RR * 1.0 / N;
+			double precision = RR * 1.0 / K;
 			_logger.info("Recall at K=" + K + ": " + recall);
+			_logger.info("Precision at K={}: ",K,precision);
 		} catch (Exception e) {
 			_logger.error("Error:" + e.getMessage());
 		} finally {

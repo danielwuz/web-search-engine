@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580;
+package edu.nyu.cs.cs2580.server;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -8,17 +8,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
+import edu.nyu.cs.cs2580.doc.ScoredDocument;
 import edu.nyu.cs.cs2580.ranker.Ranker;
 import edu.nyu.cs.cs2580.ranker.RankerFactory;
 
 class QueryHandler implements HttpHandler {
-	private Logger _log = Logger.getLogger(QueryHandler.class);
+
+	private static Logger _log = LogManager.getLogger(QueryHandler.class);
 
 	private static String plainResponse = "Request received, but I am not smart enough to echo yet!\n";
 

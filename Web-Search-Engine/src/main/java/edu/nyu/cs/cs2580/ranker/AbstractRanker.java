@@ -4,9 +4,9 @@ import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Vector;
 
-import edu.nyu.cs.cs2580.Document;
-import edu.nyu.cs.cs2580.Index;
-import edu.nyu.cs.cs2580.ScoredDocument;
+import edu.nyu.cs.cs2580.doc.Document;
+import edu.nyu.cs.cs2580.doc.ScoredDocument;
+import edu.nyu.cs.cs2580.indexer.Index;
 
 public abstract class AbstractRanker implements Ranker {
 
@@ -29,7 +29,8 @@ public abstract class AbstractRanker implements Ranker {
 
 	private Vector<String> buildQuery(String query) {
 		// Build query vector
-		Scanner s = new Scanner(query).useDelimiter("\\+");
+		Scanner s = new Scanner(query);
+		s.useDelimiter("\\+");
 		Vector<String> qv = new Vector<String>();
 		while (s.hasNext()) {
 			String term = s.next();

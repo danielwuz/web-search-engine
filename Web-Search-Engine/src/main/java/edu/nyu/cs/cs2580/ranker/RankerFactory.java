@@ -1,6 +1,6 @@
 package edu.nyu.cs.cs2580.ranker;
 
-import edu.nyu.cs.cs2580.Index;
+import edu.nyu.cs.cs2580.indexer.Index;
 
 public class RankerFactory {
 

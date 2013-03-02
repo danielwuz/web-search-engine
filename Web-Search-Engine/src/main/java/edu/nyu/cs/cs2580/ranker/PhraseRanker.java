@@ -2,9 +2,9 @@ package edu.nyu.cs.cs2580.ranker;
 
 import java.util.Vector;
 
-import edu.nyu.cs.cs2580.Document;
-import edu.nyu.cs.cs2580.Index;
-import edu.nyu.cs.cs2580.ScoredDocument;
+import edu.nyu.cs.cs2580.doc.Document;
+import edu.nyu.cs.cs2580.doc.ScoredDocument;
+import edu.nyu.cs.cs2580.indexer.Index;
 
 public class PhraseRanker extends AbstractRanker {
 
