@@ -2,6 +2,8 @@ package edu.nyu.cs.cs2580.server;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.StringReader;
+import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,6 +18,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import edu.nyu.cs.cs2580.doc.ScoredDocument;
+import edu.nyu.cs.cs2580.evaluator.Evaluator;
 import edu.nyu.cs.cs2580.ranker.Ranker;
 import edu.nyu.cs.cs2580.ranker.RankerFactory;
 
@@ -55,11 +58,18 @@ class QueryHandler implements HttpHandler {
 			queryResponse += convertToString(query, sds);
 		}
 
+		// evaluate
+		if (query_map.evaluable()) {
+			Evaluator e = new Evaluator(queryResponse);
+			queryResponse = e.eval();
+		}
+
 		// Construct a simple response.
 		Headers responseHeaders = exchange.getResponseHeaders();
 		responseHeaders.set("Content-Type", "text/plain");
 		exchange.sendResponseHeaders(200, 0); // arbitrary number of bytes
 		OutputStream output = query_map.getOutput();
+		output.write(query_map.toString().getBytes());
 		output.write(queryResponse.getBytes());
 		output.close();
 	}
@@ -69,7 +79,7 @@ class QueryHandler implements HttpHandler {
 		Iterator<ScoredDocument> itr = sds.iterator();
 		while (itr.hasNext()) {
 			ScoredDocument sd = itr.next();
-			buffer.append(query + "\t" + sd.asString());
+			buffer.append(URLDecoder.decode(query) + "\t" + sd.asString());
 			buffer.append("\n");
 		}
 		return buffer.toString();
@@ -85,6 +95,11 @@ class QueryHandler implements HttpHandler {
 			this.exchange = exchange;
 			String uriQuery = exchange.getRequestURI().getQuery();
 			this.setQueryMap(uriQuery);
+		}
+
+		public boolean evaluable() {
+			String eval = query_map.get("evaluate");
+			return "true".equalsIgnoreCase(eval);
 		}
 
 		public boolean searchable() {
@@ -120,6 +135,7 @@ class QueryHandler implements HttpHandler {
 			query_map.put("query", "test");
 			query_map.put("ranker", "simple");
 			query_map.put("format", "html");
+			query_map.put("evaluate", "false");
 			// value from HTTP request
 			String[] params = query.split("&");
 			for (String param : params) {
@@ -128,6 +144,11 @@ class QueryHandler implements HttpHandler {
 				query_map.put(name, value);
 			}
 			return query_map;
+		}
+
+		@Override
+		public String toString() {
+			return "QueryParams [query_map=" + query_map + "]\n";
 		}
 	}
 }

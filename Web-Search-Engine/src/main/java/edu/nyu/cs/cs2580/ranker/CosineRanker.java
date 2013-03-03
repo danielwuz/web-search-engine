@@ -31,9 +31,9 @@ public class CosineRanker extends AbstractRanker {
 			// accumulate score
 			score += tf_idf;
 		}
-		// normalization
+		//TODO normalization
 		if (docLength > 0 && queryLength > 0) {
-			score = score / (Math.sqrt(docLength) * Math.sqrt(queryLength));
+			//score = score / (Math.sqrt(docLength) * Math.sqrt(queryLength));
 		}
 		return new ScoredDocument(doc._docid, doc.get_title_string(), score);
 	}
