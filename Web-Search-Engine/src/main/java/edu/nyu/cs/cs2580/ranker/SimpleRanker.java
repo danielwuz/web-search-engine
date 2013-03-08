@@ -1,42 +1,37 @@
 package edu.nyu.cs.cs2580.ranker;
 
-import java.util.Vector;
-
 import edu.nyu.cs.cs2580.doc.Document;
 import edu.nyu.cs.cs2580.doc.ScoredDocument;
-import edu.nyu.cs.cs2580.indexer.Index;
+import edu.nyu.cs.cs2580.indexer.Indexer;
+import edu.nyu.cs.cs2580.query.Query;
 
 /**
- * 
- * Simple ranker that does not use the Ranker class.
+ * Score the document. Here we have provided a very simple ranking model,where a
+ * document is scored 1.0 if it gets hit by at least one query term.
  * 
  * @author dawu
  * 
  */
 public class SimpleRanker extends AbstractRanker {
 
-	public SimpleRanker(Index index_source) {
-		super(index_source);
+	public SimpleRanker(Indexer indexer) {
+		super(indexer);
 	}
 
-	public ScoredDocument runquery(Vector<String> queryVector, Document doc) {
-		// Get the document vector.
-		Vector<String> dv = doc.get_title_vector();
+	@Override
+	public ScoredDocument runquery(Query query, Document doc) {
 
-		/*
-		 * Score the document. A document is scored 1.0 if it gets hit by at
-		 * least one query term.
-		 */
 		double score = 0.0;
-		for (int i = 0; i < dv.size(); ++i) {
-			for (int j = 0; j < queryVector.size(); ++j) {
-				if (dv.get(i).equals(queryVector.get(j))) {
-					score = 1.0;
-					break;
-				}
+		for (String queryToken : query.getTokens()) {
+			if (doc.containsToken(queryToken)) {
+				score = 1.0;
+				break;
+			}
+			if (score > 0.0) {
+				break;
 			}
 		}
-		return new ScoredDocument(doc._docid, doc.get_title_string(), score);
+		return new ScoredDocument(doc, score);
 	}
 
 }

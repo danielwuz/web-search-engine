@@ -4,18 +4,46 @@ import java.util.Vector;
 
 import edu.nyu.cs.cs2580.doc.Document;
 import edu.nyu.cs.cs2580.doc.ScoredDocument;
+import edu.nyu.cs.cs2580.indexer.Indexer;
+import edu.nyu.cs.cs2580.query.Query;
+import edu.nyu.cs.cs2580.server.CgiArguments.RankerType;
 
 public interface Ranker {
 
-	interface TYPES {
-		static String COSINE = "cosine";
-		static String QL = "ql";
-		static String PHRASE = "phrase";
-		static String LINEAR = "linear";
-		static String NUMVIEWS = "numviews";
-	};
+	ScoredDocument runquery(Query query, Document doc);
 
-	Vector<ScoredDocument> runquery(String query);
+	Vector<ScoredDocument> runQuery(Query query, int numResults);
 
-	ScoredDocument runquery(Vector<String> query, Document doc);
+	public static class RankerFactory {
+		private Indexer indexer;
+
+		public RankerFactory(Indexer indexer) {
+			this.indexer = indexer;
+		}
+
+		public Ranker create(RankerType ranker) {
+			switch (ranker) {
+			case CONJUNCTIVE:
+				return new RankerConjunctive(indexer);
+			case FAVORITE:
+			case COSINE:
+				return new CosineRanker(indexer);
+			case QL:
+				return new QLRanker(indexer);
+			case PHRASE:
+				return new PhraseRanker(indexer);
+			case LINEAR:
+				return new LinearRanker(indexer);
+			case NUMVIEWS:
+				return new NumViewsRanker(indexer);
+			case FULLSCAN:
+			case NONE:
+				return new SimpleRanker(indexer);
+			default:
+				// Do nothing.
+			}
+			throw new IllegalArgumentException("Unrecognized ranker type:  "
+					+ ranker);
+		}
+	}
 }

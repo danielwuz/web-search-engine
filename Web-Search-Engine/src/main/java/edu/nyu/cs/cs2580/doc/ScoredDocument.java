@@ -1,37 +1,59 @@
 package edu.nyu.cs.cs2580.doc;
 
-// @CS2580: this class should not be changed.
+/**
+ * Document with score.
+ * 
+ * @author fdiaz
+ * @author congyu
+ */
 public class ScoredDocument implements Comparable<ScoredDocument> {
-	public int _did;
-	public String _title;
-	public Double _score;
+	private Document doc;
+	private double score;
 
-	public ScoredDocument(int did, String title, double score) {
-		_did = did;
-		_title = title;
-		_score = score;
+	public ScoredDocument(Document doc, double score) {
+		this.doc = doc;
+		this.score = score;
 	}
 
-	public String asString() {
-		return new String(Integer.toString(_did) + "\t" + _title + "\t"
-				+ _score);
+	public String asTextResult() {
+		StringBuffer buf = new StringBuffer();
+		buf.append(doc.docId).append("\t");
+		buf.append(doc.getTitle()).append("\t");
+		buf.append(score);
+		return buf.toString();
 	}
 
-	@Override
-	public String toString() {
-		return "ScoredDocument [_did=" + _did + ", _title=" + _title
-				+ ", _score=" + _score + "]";
+	/**
+	 * @CS2580: Student should implement {@code asHtmlResult} for final project.
+	 */
+	public String asHtmlResult() {
+		return "";
 	}
 
 	@Override
 	public int compareTo(ScoredDocument o) {
-		if (this._score > o._score) {
-			return -1;
-		} else if (this._score < o._score) {
-			return 1;
-		} else {
+		if (this.score == o.score) {
 			return 0;
 		}
+		return (this.score > o.score) ? 1 : -1;
 	}
 
+	public String asString() {
+		// TODO
+		return null;
+	}
+
+	public Document getDoc() {
+		return doc;
+	}
+
+	public double getScore() {
+		return score;
+	}
+
+	@Override
+	public String toString() {
+		return "ScoredDocument [doc=" + doc + ", score=" + score + "]";
+	}
+	
 }

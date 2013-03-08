@@ -4,26 +4,30 @@ import java.util.Vector;
 
 import edu.nyu.cs.cs2580.doc.Document;
 import edu.nyu.cs.cs2580.doc.ScoredDocument;
-import edu.nyu.cs.cs2580.indexer.Index;
+import edu.nyu.cs.cs2580.doc.Term;
+import edu.nyu.cs.cs2580.indexer.Indexer;
+import edu.nyu.cs.cs2580.query.Query;
 
 public class CosineRanker extends AbstractRanker {
 
-	public CosineRanker(Index index_source) {
-		super(index_source);
+	public CosineRanker(Indexer indexer) {
+		super(indexer);
 	}
 
 	@Override
-	public ScoredDocument runquery(Vector<String> query, Document doc) {
+	public ScoredDocument runquery(Query query, Document doc) {
 		double score = 0.0;
 		double docLength = 0.0;
 		double queryLength = 0.0;
 
-		for (String term : query) {
+		Vector<String> tokens = query.getTokens();
+		for (String token : tokens) {
 			// If a query term does not occur in the corpus,do not need to
 			// include it in the query length normalization.
-			if (!Document.contains(term)) {
+			if (!super.corpus.containsToken(token)) {
 				continue;
 			}
+			Term term = super.corpus.getTerm(token);
 			double tf_idf = computeTF_IDF(doc, term);
 			// compute length to do normalization
 			docLength += tf_idf * tf_idf;
@@ -31,30 +35,18 @@ public class CosineRanker extends AbstractRanker {
 			// accumulate score
 			score += tf_idf;
 		}
-		//TODO normalization
+		// TODO normalization
 		if (docLength > 0 && queryLength > 0) {
-			//score = score / (Math.sqrt(docLength) * Math.sqrt(queryLength));
+			// score = score / (Math.sqrt(docLength) * Math.sqrt(queryLength));
 		}
-		return new ScoredDocument(doc._docid, doc.get_title_string(), score);
+		return new ScoredDocument(doc, score);
 	}
 
-	private double computeTF_IDF(Document doc, String term) {
-		double tf = computeTF(doc, term);
-		double idf = computeIDF(term);
+	private double computeTF_IDF(Document doc, Term term) {
+		double tf = doc.getTermFrequency(term);
+		double idf = term.getInverseDocFreq();
 		double tf_idf = tf * idf;
 		return tf_idf;
 	}
 
-	private double computeTF(Document doc, String term) {
-		// natural term frequency
-		double tf = doc.getNaturalTermFreq(term);
-		return tf;
-	}
-
-	private double computeIDF(String term) {
-		double N = super.numDocs();
-		int df = Document.documentFrequency(term);
-		double idf = 1 + Math.log10(N * 1.0 / df);
-		return idf;
-	}
 }

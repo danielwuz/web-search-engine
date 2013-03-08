@@ -10,7 +10,7 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import edu.nyu.cs.cs2580.common.Config;
+import edu.nyu.cs.cs2580.common.Options;
 
 public class Evaluator {
 
@@ -51,7 +51,7 @@ public class Evaluator {
 	private void readRelevanceJudgments() {
 		BufferedReader reader = null;
 		try {
-			String evalCorpusPath = Config.getProperty("eval_corpus");
+			String evalCorpusPath = Options.evalCorpus();
 			reader = new BufferedReader(new FileReader(evalCorpusPath));
 			String line = null;
 			while ((line = reader.readLine()) != null) {
