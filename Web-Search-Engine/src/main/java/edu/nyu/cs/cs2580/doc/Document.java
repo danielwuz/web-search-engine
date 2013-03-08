@@ -1,7 +1,9 @@
 package edu.nyu.cs.cs2580.doc;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -15,7 +17,11 @@ public class Document implements Serializable {
 
 	protected Corpus corpus = null;
 
-	protected Map<Term, Integer> termFrequency = new HashMap<Term, Integer>();
+	// <K,V>=<term id, term frequency in current doc>
+	private Map<Integer, Integer> termFrequency = new HashMap<Integer, Integer>();
+
+	// <K,V>=<term id, term offset list>
+	private Map<Integer, List<Integer>> termOffsets = new HashMap<Integer, List<Integer>>();
 
 	protected Vector<Term> titleTokens = new Vector<Term>();
 
@@ -44,10 +50,11 @@ public class Document implements Serializable {
 	}
 
 	private void countTermFrequency(Term term) {
-		if (!termFrequency.containsKey(term)) {
-			termFrequency.put(term, 0);
+		Integer termId = term.getId();
+		if (!termFrequency.containsKey(termId)) {
+			termFrequency.put(termId, 0);
 		}
-		termFrequency.put(term, termFrequency.get(term) + 1);
+		termFrequency.put(termId, termFrequency.get(termId) + 1);
 	}
 
 	public Vector<Term> getTitleTokens() {
@@ -57,10 +64,29 @@ public class Document implements Serializable {
 	public void setBodyTokens(Vector<Term> bodyTokens) {
 		this.bodyTokens = bodyTokens;
 		countTermFrequency(bodyTokens);
+		updateTermOccur(bodyTokens);
 	}
-	
-	private void updateTermOccur(Vector<Integer> tokens, int docId){
-		
+
+	/**
+	 * Indexes terms with their occurrences (i.e., offsets) in the documents.
+	 * 
+	 * @param tokens
+	 *            terms
+	 */
+	private void updateTermOccur(Vector<Term> tokens) {
+		for (int i = 0; i < tokens.size(); i++) {
+			Term term = tokens.get(i);
+			writeTermOffset(term, i);
+		}
+	}
+
+	private void writeTermOffset(Term term, int offset) {
+		Integer termId = term.getId();
+		if (!termOffsets.containsKey(termId)) {
+			List<Integer> offsets = new ArrayList<Integer>();
+			termOffsets.put(termId, offsets);
+		}
+		termOffsets.get(termId).add(offset);
 	}
 
 	public Vector<Term> getBodyTokens() {
@@ -68,7 +94,7 @@ public class Document implements Serializable {
 	}
 
 	public int getTermFrequency(Term term) {
-		Integer tf = termFrequency.get(term);
+		Integer tf = termFrequency.get(term.getId());
 		return tf == null ? 0 : tf;
 	}
 
@@ -81,7 +107,7 @@ public class Document implements Serializable {
 	}
 
 	public boolean containsToken(String queryToken) {
-		Term term = corpus.getTerm(queryToken);
+		Integer term = corpus.getTerm(queryToken).getId();
 		return this.termFrequency.containsKey(term);
 	}
 
@@ -91,7 +117,8 @@ public class Document implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Document [docId=" + docId + "]";
+		return "Document [docId=" + docId + ", termOffsets=" + termOffsets
+				+ "]";
 	}
-	
+
 }
