@@ -68,6 +68,36 @@ public class Term implements Serializable {
 		return idf;
 	}
 
+	/**
+	 * Searches successor document of given doc id.
+	 * <p>
+	 * Successor document is the one with id greater than given doc id and next
+	 * to doc id.
+	 * 
+	 * @param docid
+	 *            current document id
+	 * @return successor of doc id; return -1 if not found
+	 */
+	public int next(int docid) {
+		List<Document> postings = this.getPostingList();
+		// search from last position
+		for (int i = lastDocId; i < postings.size(); i++) {
+			Document post = postings.get(i);
+			if (post.docId > docid) {
+				lastDocId = i;
+				return post.docId;
+			}
+		}
+		return -1;
+	}
+
+	public void resetCachedIndex() {
+		this.lastDocId = 0;
+	}
+
+	// cache last search position
+	public int lastDocId = 0;
+
 	private double computeIDF() {
 		assert corpus != null;
 		double N = corpus.numOfDocs();

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import edu.nyu.cs.cs2580.indexer.io.FullScanLoader;
 import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 import edu.nyu.cs.cs2580.searcher.FullScanSearcher;
 import edu.nyu.cs.cs2580.server.SearchEngine;
@@ -22,8 +23,8 @@ public class IndexerFullScan extends Indexer {
 	}
 
 	@Override
-	public AbstractSearcher createSearcher() {
-		return new FullScanSearcher(corpus);
+	public AbstractSearcher createSearcher(Query query) {
+		return new FullScanSearcher(corpus, query);
 	}
 
 	@Override

@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.nyu.cs.cs2580.doc.Corpus;
 import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 
 /**
@@ -43,7 +44,7 @@ public abstract class Indexer {
 		corpus = new IndexReader().loadIndex();
 	}
 
-	public abstract AbstractSearcher createSearcher();
+	public abstract AbstractSearcher createSearcher(Query query);
 
 	/**
 	 * APIs for statistics needed for ranking.

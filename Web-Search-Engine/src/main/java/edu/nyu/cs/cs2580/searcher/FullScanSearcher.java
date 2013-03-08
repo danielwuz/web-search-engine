@@ -6,12 +6,13 @@ import edu.nyu.cs.cs2580.query.Query;
 
 public class FullScanSearcher extends AbstractSearcher {
 
-	public FullScanSearcher(Corpus corpus) {
-		super(corpus);
+
+	public FullScanSearcher(Corpus corpus, Query query) {
+		super(corpus, query);
 	}
 
 	@Override
-	public Document nextDoc(Query query, int docid) {
+	public Document nextDoc(int docid) {
 		return corpus.getDocument(++docid);
 	}
 

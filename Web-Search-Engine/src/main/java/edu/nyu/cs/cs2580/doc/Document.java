@@ -89,4 +89,9 @@ public class Document implements Serializable {
 		return this.rawDoc.getNumViews();
 	}
 
+	@Override
+	public String toString() {
+		return "Document [docId=" + docId + "]";
+	}
+	
 }

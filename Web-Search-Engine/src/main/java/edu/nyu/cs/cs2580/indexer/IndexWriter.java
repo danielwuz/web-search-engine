@@ -67,12 +67,10 @@ public class IndexWriter implements Writable {
 		Vector<Term> bodyTokens = new Vector<Term>();
 		readTermVector(raw.getBody(), bodyTokens);
 
-		int docId = corpus.numOfDocs();
-		Document doc = new Document(docId, corpus);
+		Document doc = corpus.createDoc();
 		doc.setDocumentRaw(raw);
 		doc.setTitleTokens(titleTokens);
 		doc.setBodyTokens(bodyTokens);
-		corpus.addDocument(doc);
 
 		Set<Term> uniqueTerms = new HashSet<Term>();
 		updateStatistics(doc.getTitleTokens(), uniqueTerms);

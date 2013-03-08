@@ -48,7 +48,14 @@ public class Corpus implements Serializable {
 		this.totalTermFrequency += 1;
 	}
 
-	public void addDocument(Document doc) {
+	public Document createDoc() {
+		int docId = this.numOfDocs();
+		Document doc = new Document(docId, this);
+		this.addDocument(doc);
+		return doc;
+	}
+
+	private void addDocument(Document doc) {
 		this._documents.add(doc);
 	}
 

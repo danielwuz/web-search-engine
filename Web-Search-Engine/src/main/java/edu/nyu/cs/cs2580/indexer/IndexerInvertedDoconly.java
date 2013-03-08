@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import edu.nyu.cs.cs2580.indexer.io.InvertedLoader;
 import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 import edu.nyu.cs.cs2580.searcher.LinearSearcher;
 
@@ -24,8 +25,8 @@ public class IndexerInvertedDoconly extends Indexer {
 	}
 
 	@Override
-	public AbstractSearcher createSearcher() {
-		return new LinearSearcher(corpus);
+	public AbstractSearcher createSearcher(Query query) {
+		return new LinearSearcher(corpus, query);
 	}
 
 }

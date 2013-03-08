@@ -53,10 +53,10 @@ public abstract class AbstractRanker implements Ranker {
 	@Override
 	public Vector<ScoredDocument> runQuery(Query query, int numResults) {
 		Queue<ScoredDocument> rankQueue = new PriorityQueue<ScoredDocument>();
-		AbstractSearcher searcher = indexer.createSearcher();
+		AbstractSearcher searcher = indexer.createSearcher(query);
 		Document doc = null;
 		int docid = -1;
-		while ((doc = searcher.nextDoc(query, docid)) != null) {
+		while ((doc = searcher.nextDoc(docid)) != null) {
 			ScoredDocument scoredDoc = runquery(query, doc);
 			rankQueue.add(scoredDoc);
 			if (rankQueue.size() > numResults) {

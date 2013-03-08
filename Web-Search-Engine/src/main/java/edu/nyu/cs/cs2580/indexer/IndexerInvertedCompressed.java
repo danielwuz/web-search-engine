@@ -3,6 +3,7 @@ package edu.nyu.cs.cs2580.indexer;
 import java.io.IOException;
 
 import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 
 /**
@@ -11,7 +12,7 @@ import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 public class IndexerInvertedCompressed extends Indexer {
 
 	@Override
-	public AbstractSearcher createSearcher() {
+	public AbstractSearcher createSearcher(Query query) {
 		return null;
 	}
 
@@ -24,5 +25,5 @@ public class IndexerInvertedCompressed extends Indexer {
 	public Loader createLoader() throws IOException {
 		return null;
 	}
-	
+
 }
