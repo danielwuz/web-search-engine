@@ -10,6 +10,17 @@ public abstract class AbstractSearcher {
 
 	protected final Query query;
 
+	/**
+	 * Constructor with corpus and query.
+	 * <p>
+	 * Searcher is query based in order to cache position offset during call to
+	 * {@link #nextDoc(int)}, to improve search efficiency.
+	 * 
+	 * @param corpus
+	 *            indexed corpus
+	 * @param query
+	 *            user query
+	 */
 	public AbstractSearcher(Corpus corpus, Query query) {
 		this.corpus = corpus;
 		this.query = query;

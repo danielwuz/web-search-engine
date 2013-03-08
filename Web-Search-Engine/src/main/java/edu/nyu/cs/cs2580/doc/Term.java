@@ -15,14 +15,11 @@ public class Term implements Serializable {
 	// the number of times the term appears in the corpus, over full corpus
 	private int corpusFrequency;
 
-	// the number of documents the term appears in.
-	private int docFrequency;
-
 	private Double idf = null;
 
 	private Corpus corpus;
 
-	private List<Document> postingList = new ArrayList<Document>();
+	private List<Integer> postingList = new ArrayList<Integer>();
 
 	public Term(int id, String token) {
 		this.id = id;
@@ -38,10 +35,10 @@ public class Term implements Serializable {
 	}
 
 	public void addPost(Document doc) {
-		this.postingList.add(doc);
+		this.postingList.add(doc.docId);
 	}
 
-	public List<Document> getPostingList() {
+	public List<Integer> getPostingList() {
 		return this.postingList;
 	}
 
@@ -49,12 +46,14 @@ public class Term implements Serializable {
 		this.corpusFrequency += 1;
 	}
 
-	public void increasetDocFreq() {
-		this.docFrequency += 1;
-	}
-
+	/**
+	 * Get the number of documents the term appears in.
+	 * 
+	 * @return document frequency
+	 * 
+	 */
 	public int getDocFrequency() {
-		return this.docFrequency;
+		return this.postingList.size();
 	}
 
 	public int getCorpusFreqency() {
@@ -79,13 +78,13 @@ public class Term implements Serializable {
 	 * @return successor of doc id; return -1 if not found
 	 */
 	public int next(int docid) {
-		List<Document> postings = this.getPostingList();
+		List<Integer> postings = this.getPostingList();
 		// search from last position
 		for (int i = lastDocId; i < postings.size(); i++) {
-			Document post = postings.get(i);
-			if (post.docId > docid) {
+			Integer postId = postings.get(i);
+			if (postId > docid) {
 				lastDocId = i;
-				return post.docId;
+				return postId;
 			}
 		}
 		return -1;
@@ -134,7 +133,8 @@ public class Term implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Term [token=" + token + ", id=" + id + "]";
+		return "Term [token=" + token + ", id=" + id + ", postingList="
+				+ postingList + "]";
 	}
 
 }

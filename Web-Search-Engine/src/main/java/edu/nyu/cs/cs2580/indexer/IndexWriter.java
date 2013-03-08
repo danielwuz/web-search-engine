@@ -77,7 +77,7 @@ public class IndexWriter implements Writable {
 		updateStatistics(doc.getBodyTokens(), uniqueTerms);
 		// updateTermOccur(doc.getBodyTokens(), doc.docId);
 		for (Term term : uniqueTerms) {
-			term.increasetDocFreq();
+			term.addPost(doc);
 		}
 	}
 
