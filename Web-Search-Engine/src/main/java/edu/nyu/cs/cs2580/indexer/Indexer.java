@@ -36,7 +36,7 @@ public abstract class Indexer {
 	}
 
 	public void constructIndex() throws IOException {
-		Loader loader = createLoader();
+		Loader loader = Loader.createLoader();
 		new IndexWriter(loader).constructIndex();
 	}
 
@@ -58,8 +58,6 @@ public abstract class Indexer {
 	 */
 	// Number of times {@code term} appeared in the document {@code url}.
 	public abstract int documentTermFrequency(String term, String url);
-
-	public abstract Loader createLoader() throws IOException;
 
 	/**
 	 * All Indexers must be created through this factory class based on the

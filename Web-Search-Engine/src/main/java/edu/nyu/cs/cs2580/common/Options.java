@@ -59,6 +59,9 @@ public class Options {
 		if (getProperty("eval.corpus.path") == null) {
 			logger.warn("Missing option: eval.corpus.path!");
 		}
+		if (getProperty("corpus.loader") == null) {
+			logger.warn("Missing option: corpus.loader!");
+		}
 	}
 
 	private static String getProperty(String key) {
@@ -85,6 +88,10 @@ public class Options {
 
 	public static String evalCorpus() {
 		return getProperty("eval.corpus.path");
+	}
+
+	public static String loaderType() {
+		return getProperty("corpus.loader");
 	}
 
 }

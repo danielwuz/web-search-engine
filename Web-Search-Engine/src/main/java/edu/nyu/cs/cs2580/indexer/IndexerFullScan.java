@@ -1,9 +1,5 @@
 package edu.nyu.cs.cs2580.indexer;
 
-import java.io.IOException;
-
-import edu.nyu.cs.cs2580.indexer.io.FullScanLoader;
-import edu.nyu.cs.cs2580.indexer.io.Loader;
 import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 import edu.nyu.cs.cs2580.searcher.FullScanSearcher;
@@ -27,8 +23,4 @@ public class IndexerFullScan extends Indexer {
 		return new FullScanSearcher(corpus, query);
 	}
 
-	@Override
-	public Loader createLoader() throws IOException {
-		return new FullScanLoader();
-	}
 }
