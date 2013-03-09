@@ -22,6 +22,10 @@ public class LinearSearcher extends AbstractSearcher {
 
 	@Override
 	public Document nextDoc(int docid) {
+		if (terms.isEmpty()) {
+			// no query criteria
+			return null;
+		}
 		while (true) {
 			Set<Integer> docIds = new HashSet<Integer>();
 			for (Term term : terms) {

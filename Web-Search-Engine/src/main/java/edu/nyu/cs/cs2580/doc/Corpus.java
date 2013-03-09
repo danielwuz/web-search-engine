@@ -110,8 +110,23 @@ public class Corpus implements Serializable {
 	public List<Term> getTerms(List<String> tokens) {
 		List<Term> terms = new ArrayList<Term>();
 		for (String token : tokens) {
-			terms.add(getTerm(token));
+			Term term = getTerm(token);
+			if (term == null) {
+				// if given token not exists in vocabulary, ignore
+				continue;
+			}
+			terms.add(term);
 		}
 		return terms;
+	}
+
+	/**
+	 * Gets term by its id
+	 * 
+	 * @param termId
+	 * @return
+	 */
+	public Term getTerm(Integer termId) {
+		return null;
 	}
 }

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
+import edu.nyu.cs.cs2580.indexer.Filter;
+import edu.nyu.cs.cs2580.indexer.Filter.DummyFilter;
 
 public class FullScanLoader extends Loader {
 
@@ -15,6 +17,10 @@ public class FullScanLoader extends Loader {
 	private BufferedReader reader;
 
 	private String next = null;
+
+	public FullScanLoader() {
+		logger.info("Use corpus loader: {}", this.getClass().getSimpleName());
+	}
 
 	@Override
 	protected void load(File file) throws FileNotFoundException {
@@ -59,6 +65,11 @@ public class FullScanLoader extends Loader {
 			reader.close();
 		}
 		super.finalize();
+	}
+
+	@Override
+	public Filter getFilter() {
+		return new DummyFilter();
 	}
 
 }

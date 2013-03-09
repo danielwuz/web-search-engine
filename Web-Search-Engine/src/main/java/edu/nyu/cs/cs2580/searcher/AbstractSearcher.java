@@ -4,6 +4,13 @@ import edu.nyu.cs.cs2580.doc.Corpus;
 import edu.nyu.cs.cs2580.doc.Document;
 import edu.nyu.cs.cs2580.query.Query;
 
+/**
+ * @author dawu
+ * 
+ * @see edu.nyu.cs.cs2580.searcher.FullScanSearcher
+ * @see edu.nyu.cs.cs2580.searcher.LinearSearcher
+ * @see edu.nyu.cs.cs2580.searcher.PhraseSearcher
+ */
 public abstract class AbstractSearcher {
 
 	protected final Corpus corpus;

@@ -20,6 +20,10 @@ public class InvertedLoader extends Loader {
 
 	private int pointer = 0;
 
+	public InvertedLoader() {
+		logger.info("Use corpus loader: {}", this.getClass().getSimpleName());
+	}
+
 	@Override
 	protected void load(File file) throws FileNotFoundException {
 		constructIndexFromFile(file);
@@ -75,7 +79,8 @@ public class InvertedLoader extends Loader {
 		return filter.process(body.toString());
 	}
 
-	private Filter getFilter() {
+	@Override
+	public Filter getFilter() {
 		return new StemmingFilter(new SpecialCharacterFilter(new HtmlFilter()));
 	}
 

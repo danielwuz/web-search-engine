@@ -73,8 +73,8 @@ public class IndexWriter implements Writable {
 		doc.setBodyTokens(bodyTokens);
 
 		Set<Term> uniqueTerms = new HashSet<Term>();
-		updateStatistics(doc.getTitleTokens(), uniqueTerms);
-		updateStatistics(doc.getBodyTokens(), uniqueTerms);
+		updateStatistics(titleTokens, uniqueTerms);
+		updateStatistics(bodyTokens, uniqueTerms);
 		// updateTermOccur(doc.getBodyTokens(), doc.docId);
 		for (Term term : uniqueTerms) {
 			term.addPost(doc);

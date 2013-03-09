@@ -44,6 +44,17 @@ public abstract class Indexer {
 		corpus = new IndexReader().loadIndex();
 	}
 
+	/**
+	 * Creates a document searcher object for a query.
+	 * <p>
+	 * 
+	 * @param query
+	 *            a user input query, typically the one past along in url while
+	 *            using GET
+	 * @return document searcher, providing various search algorithms
+	 * 
+	 * @see edu.nyu.cs.cs2580.searcher.AbstractSearcher
+	 */
 	public abstract AbstractSearcher createSearcher(Query query);
 
 	/**

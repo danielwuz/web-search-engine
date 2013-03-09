@@ -2,7 +2,6 @@ package edu.nyu.cs.cs2580.indexer.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.Iterator;
 
 import org.apache.logging.log4j.LogManager;
@@ -10,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.nyu.cs.cs2580.common.Options;
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
+import edu.nyu.cs.cs2580.indexer.Filter;
 
 public abstract class Loader implements Iterator<DocumentRaw> {
 
@@ -26,14 +26,26 @@ public abstract class Loader implements Iterator<DocumentRaw> {
 
 	protected abstract void load(File file) throws FileNotFoundException;
 
+	/**
+	 * Filter that is used to preprocess raw text.
+	 * <p>
+	 * This filter is used in both <code>SearchEngine.Mode.INDEX</code> phase
+	 * and <code>SearchEngine.Mode.SERVE</code> phase.<br/>
+	 * 
+	 * In both phases, filter must be identical, otherwise query might mismatch
+	 * indexed corpus.
+	 * 
+	 * @return filter for preprocess text
+	 */
+	public abstract Filter getFilter();
+
 	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
 
-	public static Loader createLoader() throws IOException {
+	public static Loader createLoader() {
 		String loader = Options.loaderType();
-		logger.info("Use corpus loader: {}", loader);
 		if (LoaderType.SIMPLE.equals(loader)) {
 			return new FullScanLoader();
 		} else if (LoaderType.WIKI.equals(loader)) {

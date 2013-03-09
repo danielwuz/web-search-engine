@@ -23,9 +23,9 @@ public class Document implements Serializable {
 	// <K,V>=<term id, term offset list>
 	private Map<Integer, List<Integer>> termOffsets = new HashMap<Integer, List<Integer>>();
 
-	protected Vector<Term> titleTokens = new Vector<Term>();
+	protected List<Integer> titleTokens = new Vector<Integer>();
 
-	protected Vector<Term> bodyTokens = new Vector<Term>();
+	protected List<Integer> bodyTokens = new Vector<Integer>();
 
 	private DocumentRaw rawDoc;
 
@@ -38,33 +38,36 @@ public class Document implements Serializable {
 		this.rawDoc = rawDoc;
 	}
 
-	public void setTitleTokens(Vector<Term> titleTokens) {
-		this.titleTokens = titleTokens;
-		countTermFrequency(titleTokens);
+	public void setTitleTokens(List<Term> titleTokens) {
+		for (Term term : titleTokens) {
+			this.titleTokens.add(term.getId());
+		}
+		countTermFrequency(this.titleTokens);
 	}
 
-	private void countTermFrequency(Vector<Term> terms) {
-		for (Term term : terms) {
-			countTermFrequency(term);
+	private void countTermFrequency(List<Integer> terms) {
+		for (Integer termId : terms) {
+			countTermFrequency(termId);
 		}
 	}
 
-	private void countTermFrequency(Term term) {
-		Integer termId = term.getId();
+	private void countTermFrequency(Integer termId) {
 		if (!termFrequency.containsKey(termId)) {
 			termFrequency.put(termId, 0);
 		}
 		termFrequency.put(termId, termFrequency.get(termId) + 1);
 	}
 
-	public Vector<Term> getTitleTokens() {
+	public List<Integer> getTitleTokens() {
 		return this.titleTokens;
 	}
 
-	public void setBodyTokens(Vector<Term> bodyTokens) {
-		this.bodyTokens = bodyTokens;
-		countTermFrequency(bodyTokens);
-		updateTermOccur(bodyTokens);
+	public void setBodyTokens(List<Term> bodyTokens) {
+		for (Term term : bodyTokens) {
+			this.bodyTokens.add(term.getId());
+		}
+		countTermFrequency(this.bodyTokens);
+		updateTermOccur(this.bodyTokens);
 	}
 
 	/**
@@ -73,15 +76,14 @@ public class Document implements Serializable {
 	 * @param tokens
 	 *            terms
 	 */
-	private void updateTermOccur(Vector<Term> tokens) {
+	private void updateTermOccur(List<Integer> tokens) {
 		for (int i = 0; i < tokens.size(); i++) {
-			Term term = tokens.get(i);
-			writeTermOffset(term, i);
+			Integer termId = tokens.get(i);
+			writeTermOffset(termId, i);
 		}
 	}
 
-	private void writeTermOffset(Term term, int offset) {
-		Integer termId = term.getId();
+	private void writeTermOffset(Integer termId, int offset) {
 		if (!termOffsets.containsKey(termId)) {
 			List<Integer> offsets = new ArrayList<Integer>();
 			termOffsets.put(termId, offsets);
@@ -89,7 +91,7 @@ public class Document implements Serializable {
 		termOffsets.get(termId).add(offset);
 	}
 
-	public Vector<Term> getBodyTokens() {
+	public List<Integer> getBodyTokens() {
 		return this.bodyTokens;
 	}
 
@@ -121,4 +123,36 @@ public class Document implements Serializable {
 				+ "]";
 	}
 
+	public int countPhrase(List<Term> phrase) {
+		int count = 0;
+		int end = bodyTokens.size() - phrase.size() + 1;
+		for (int i = 0; i < end; i++) {
+			if (isMatchFromPosition(i, phrase)) {
+				count++;
+			}
+		}
+		return count;
+
+	}
+
+	public boolean containsPhrase(List<Term> phrase) {
+		int end = bodyTokens.size() - phrase.size() + 1;
+		for (int i = 0; i < end; i++) {
+			if (isMatchFromPosition(i, phrase)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isMatchFromPosition(int i, List<Term> phrase) {
+		for (int j = 0; j < phrase.size(); j++) {
+			Integer termId1 = bodyTokens.get(i + j);
+			Integer termId2 = phrase.get(j).getId();
+			if (!termId1.equals(termId2)) {
+				return false;
+			}
+		}
+		return true;
+	}
 }
