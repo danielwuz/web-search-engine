@@ -83,6 +83,7 @@ public class IndexWriter implements Writable {
 		for (Term term : uniqueTerms) {
 			term.addPost(doc);
 		}
+		logger.debug("Process document {}: {}", doc.docId, doc.getTitle());
 	}
 
 	/**
