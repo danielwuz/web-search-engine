@@ -41,6 +41,10 @@ public class IndexWriter implements Writable {
 		this.loader.loadCorpus(corpusFile);
 		while (loader.hasNext()) {
 			DocumentRaw raw = loader.next();
+			if (raw == null) {
+				// ignore error
+				continue;
+			}
 			processDocument(raw);
 		}
 		logger.info("Indexed {} docs with {} terms.", corpus.numOfDocs(),

@@ -53,8 +53,8 @@ public class InvertedLoader extends Loader {
 		try {
 			return createContent(next);
 		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			throw new RuntimeException("IOException while loading corpus");
+			logger.error("IOException while loading corpus: {}", e.getMessage());
+			return null;
 		}
 	}
 
