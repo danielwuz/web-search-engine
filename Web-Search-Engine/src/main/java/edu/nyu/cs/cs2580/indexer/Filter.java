@@ -1,6 +1,10 @@
 package edu.nyu.cs.cs2580.indexer;
 
+import java.util.Scanner;
+
 import org.apache.commons.lang.StringUtils;
+
+import edu.nyu.cs.cs2580.common.Stemmer;
 
 public abstract class Filter {
 
@@ -26,13 +30,24 @@ public abstract class Filter {
 
 	public static class StemmingFilter extends Filter {
 
+		Stemmer stemmer = new Stemmer();
+
 		public StemmingFilter(Filter next) {
 			super(next);
 		}
 
 		@Override
 		protected String filter(String content) {
-			return content.toLowerCase();
+			StringBuffer buffer = new StringBuffer();
+			Scanner s = new Scanner(content);
+			while (s.hasNext()) {
+				String token = s.next();
+				token = token.toLowerCase().trim();
+				token = stemmer.stem(token);
+				buffer.append(token + " ");
+			}
+			s.close();
+			return buffer.toString();
 		}
 
 	}

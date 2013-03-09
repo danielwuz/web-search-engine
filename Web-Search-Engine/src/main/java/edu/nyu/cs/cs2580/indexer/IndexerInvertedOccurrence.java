@@ -9,9 +9,7 @@ import edu.nyu.cs.cs2580.searcher.PhraseSearcher;
  */
 public class IndexerInvertedOccurrence extends Indexer {
 
-	
 	public AbstractSearcher createSearcher(Query query) {
-		// TODO return
 		return new PhraseSearcher(corpus, query);
 	}
 

@@ -4,3 +4,7 @@
 *.jar
 *.war
 *.ear
+Books/
+Lectures/
+data/
+Web-Search-Engine/target/
