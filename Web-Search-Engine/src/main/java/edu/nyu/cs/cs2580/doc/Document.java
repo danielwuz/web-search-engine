@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
-// @CS2580: This is a simple implementation that you will be changing
-// in homework 2.  For this homework, don't worry about how this is done.
+/**
+ * @author dawu
+ * 
+ */
 public class Document implements Serializable {
 
 	private static final long serialVersionUID = 6915845015202985440L;
@@ -18,16 +20,24 @@ public class Document implements Serializable {
 	protected Corpus corpus = null;
 
 	// <K,V>=<term id, term frequency in current doc>
-	private Map<Integer, Integer> termFrequency = new HashMap<Integer, Integer>();
+	protected Map<Integer, Integer> termFrequency = new HashMap<Integer, Integer>();
 
 	// <K,V>=<term id, term offset list>
-	private Map<Integer, List<Integer>> termOffsets = new HashMap<Integer, List<Integer>>();
+	protected Map<Integer, List<Integer>> termOffsets = new HashMap<Integer, List<Integer>>();
 
 	protected List<Integer> titleTokens = new Vector<Integer>();
 
 	protected List<Integer> bodyTokens = new Vector<Integer>();
 
-	private DocumentRaw rawDoc;
+	// Title field. Title field CANNOT contain character #, for # is the
+	// delimiter when persisting document to disk.
+	protected String title;
+
+	protected int numViews;
+
+	public Document(int docid) {
+		this.docId = docid;
+	}
 
 	public Document(int docid, Corpus corpus) {
 		this.docId = docid;
@@ -35,7 +45,8 @@ public class Document implements Serializable {
 	}
 
 	public void setDocumentRaw(DocumentRaw rawDoc) {
-		this.rawDoc = rawDoc;
+		this.title = rawDoc.getTitle();
+		this.numViews = rawDoc.getNumViews();
 	}
 
 	public void setTitleTokens(List<Term> titleTokens) {
@@ -105,7 +116,7 @@ public class Document implements Serializable {
 	}
 
 	public String getTitle() {
-		return this.rawDoc.getTitle();
+		return this.title;
 	}
 
 	public boolean containsToken(String queryToken) {
@@ -114,7 +125,7 @@ public class Document implements Serializable {
 	}
 
 	public int getNumViews() {
-		return this.rawDoc.getNumViews();
+		return this.numViews;
 	}
 
 	@Override
@@ -155,4 +166,9 @@ public class Document implements Serializable {
 		}
 		return true;
 	}
+
+	public void setCorpus(Corpus corpus) {
+		this.corpus = corpus;
+	}
+
 }

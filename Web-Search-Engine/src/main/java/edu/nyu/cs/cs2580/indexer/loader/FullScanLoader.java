@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580.indexer.io;
+package edu.nyu.cs.cs2580.indexer.loader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
-import edu.nyu.cs.cs2580.indexer.Filter;
-import edu.nyu.cs.cs2580.indexer.Filter.DummyFilter;
+import edu.nyu.cs.cs2580.filter.DummyFilter;
+import edu.nyu.cs.cs2580.filter.Filter;
 
 public class FullScanLoader extends Loader {
 

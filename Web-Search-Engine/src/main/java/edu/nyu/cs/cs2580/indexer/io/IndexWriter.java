@@ -1,8 +1,7 @@
-package edu.nyu.cs.cs2580.indexer;
+package edu.nyu.cs.cs2580.indexer.io;
 
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.HashSet;
 import java.util.Scanner;
 import java.util.Set;
@@ -15,9 +14,9 @@ import edu.nyu.cs.cs2580.common.Options;
 import edu.nyu.cs.cs2580.doc.Corpus;
 import edu.nyu.cs.cs2580.doc.Document;
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
+import edu.nyu.cs.cs2580.doc.SerializeUtil;
 import edu.nyu.cs.cs2580.doc.Term;
-import edu.nyu.cs.cs2580.indexer.io.Loader;
-import edu.nyu.cs.cs2580.indexer.io.Writable;
+import edu.nyu.cs.cs2580.indexer.loader.Loader;
 
 public class IndexWriter implements Writable {
 
@@ -38,6 +37,7 @@ public class IndexWriter implements Writable {
 		String corpusFile = Options.corpusPath();
 		logger.info("Construct index from: {}", corpusFile);
 
+		DocumentIO cache = new DocumentIO();
 		this.loader.loadCorpus(corpusFile);
 		while (loader.hasNext()) {
 			DocumentRaw raw = loader.next();
@@ -45,16 +45,18 @@ public class IndexWriter implements Writable {
 				// ignore error
 				continue;
 			}
-			processDocument(raw);
+			Document doc = processDocument(raw);
+			cache.addDocument(doc);
 		}
+		cache.flush();
 		logger.info("Indexed {} docs with {} terms.", corpus.numOfDocs(),
 				corpus.numOfTerms());
 		// persist to file
-		String indexFile = Options.indexPath();
+		String indexFile = Options.corpusIndexPath();
 		logger.info("Store index to: {}", indexFile);
-		ObjectOutputStream writer = new ObjectOutputStream(
-				new FileOutputStream(indexFile));
-		writer.writeObject(corpus);
+		String corpusString = SerializeUtil.instance().asRecord(corpus);
+		FileWriter writer = new FileWriter(indexFile);
+		writer.write(corpusString);
 		writer.close();
 	}
 
@@ -64,7 +66,7 @@ public class IndexWriter implements Writable {
 	 * 
 	 * @param content
 	 */
-	protected void processDocument(DocumentRaw raw) {
+	protected Document processDocument(DocumentRaw raw) {
 		Vector<Term> titleTokens = new Vector<Term>();
 		readTermVector(raw.getTitle(), titleTokens);
 
@@ -84,6 +86,7 @@ public class IndexWriter implements Writable {
 			term.addPost(doc);
 		}
 		logger.debug("Process document {}: {}", doc.docId, doc.getTitle());
+		return doc;
 	}
 
 	/**

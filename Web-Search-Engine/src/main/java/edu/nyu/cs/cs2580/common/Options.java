@@ -50,8 +50,8 @@ public class Options {
 		if (getProperty("corpus.path") == null) {
 			logger.warn("Missing option: corpus.path!");
 		}
-		if (getProperty("index.path") == null) {
-			logger.warn("Missing option: index.path!");
+		if (getProperty("corpus.index") == null) {
+			logger.warn("Missing option: corpus.index!");
 		}
 		if (getProperty("indexer.type") == null) {
 			logger.warn("Missing option: indexer.type!");
@@ -78,8 +78,30 @@ public class Options {
 		return getProperty("indexer.type");
 	}
 
-	public static String indexPath() {
-		return getProperty("index.path");
+	public static String docIndex() {
+		return getProperty("doc.index");
+	}
+
+	public static String docIndexPath() {
+		String docIndex = getProperty("doc.index");
+		return prependPath(docIndex);
+	}
+
+	public static String corpusIndexPath() {
+		String corpusIndex = getProperty("corpus.index");
+		return prependPath(corpusIndex);
+	}
+
+	public static String indexPrefix() {
+		return getProperty("index.path.prefix");
+	}
+
+	private static String prependPath(String index) {
+		String indexPrefix = indexPrefix();
+		if (!indexPrefix.endsWith("/")) {
+			indexPrefix += "/";
+		}
+		return indexPrefix + index;
 	}
 
 	public static String corpusPath() {

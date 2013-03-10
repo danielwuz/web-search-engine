@@ -3,8 +3,8 @@ package edu.nyu.cs.cs2580.query;
 import java.util.Scanner;
 import java.util.Vector;
 
-import edu.nyu.cs.cs2580.indexer.Filter;
-import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.filter.Filter;
+import edu.nyu.cs.cs2580.indexer.loader.Loader;
 
 /**
  * Representation of a user query.

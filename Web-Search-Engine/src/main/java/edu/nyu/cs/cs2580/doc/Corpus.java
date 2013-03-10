@@ -12,15 +12,16 @@ public class Corpus implements Serializable {
 	private static final long serialVersionUID = 58574016811172625L;
 
 	// Maps each term to their integer representation
-	private Map<String, Term> _dictionary = new HashMap<String, Term>();
-
-	// All unique terms appeared in corpus. Offsets are integer representations.
-	private Vector<String> _terms = new Vector<String>();
+	protected Map<String, Term> _dictionary = new HashMap<String, Term>();
 
 	// Stores all Document in memory.
-	private Vector<Document> _documents = new Vector<Document>();
+	private Map<Integer, Document> _documents = new HashMap<Integer, Document>();
 
-	private long totalTermFrequency = 0;
+	protected long totalTermFrequency = 0;
+
+	protected int termCount = 0;
+
+	protected int docCount = 0;
 
 	/**
 	 * whether token is contained in vocabulary
@@ -35,8 +36,7 @@ public class Corpus implements Serializable {
 
 	public Term createTerm(String token) {
 		if (!this.containsToken(token)) {
-			int id = _terms.size();
-			_terms.add(token);
+			int id = termCount++;
 			Term term = new Term(id, token);
 			term.setCorpus(this);
 			_dictionary.put(token, term);
@@ -49,19 +49,20 @@ public class Corpus implements Serializable {
 	}
 
 	public Document createDoc() {
-		int docId = this.numOfDocs();
+		int docId = docCount++;
 		Document doc = new Document(docId, this);
-		this.addDocument(doc);
+		// this.addDocument(doc);
 		return doc;
 	}
 
-	private void addDocument(Document doc) {
-		this._documents.add(doc);
+	public void addDocument(Document doc) {
+		doc.setCorpus(this);
+		this._documents.put(doc.docId, doc);
 	}
 
 	// Number of documents in the corpus.
 	public int numOfDocs() {
-		return this._documents.size();
+		return this.docCount;
 	}
 
 	// Number of term occurrences in the corpus. If a term appears 10 times, it
@@ -79,14 +80,11 @@ public class Corpus implements Serializable {
 	 * @return
 	 */
 	public Document getDocument(int docId) {
-		if (hasDoc(docId)) {
-			return this._documents.get(docId);
-		}
-		return null;
+		return this._documents.get(docId);
 	}
 
 	public boolean hasDoc(int docId) {
-		return docId >= 0 && docId < _documents.size();
+		return _documents.containsKey(docId);
 	}
 
 	public static Vector<String> getTermVector(Vector<Term> tokens) {
@@ -120,13 +118,4 @@ public class Corpus implements Serializable {
 		return terms;
 	}
 
-	/**
-	 * Gets term by its id
-	 * 
-	 * @param termId
-	 * @return
-	 */
-	public Term getTerm(Integer termId) {
-		return null;
-	}
 }

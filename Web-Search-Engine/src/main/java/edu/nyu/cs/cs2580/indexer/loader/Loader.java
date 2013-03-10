@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580.indexer.io;
+package edu.nyu.cs.cs2580.indexer.loader;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -9,7 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import edu.nyu.cs.cs2580.common.Options;
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
-import edu.nyu.cs.cs2580.indexer.Filter;
+import edu.nyu.cs.cs2580.filter.Filter;
 
 public abstract class Loader implements Iterator<DocumentRaw> {
 

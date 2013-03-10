@@ -8,18 +8,18 @@ public class Term implements Serializable {
 
 	private static final long serialVersionUID = 9196791987858188257L;
 
-	private final String token;
+	protected final String token;
 
-	private int id;
+	protected int id;
 
 	// the number of times the term appears in the corpus, over full corpus
-	private int corpusFrequency;
+	protected int corpusFrequency;
 
-	private Double idf = null;
+	protected Double idf = null;
 
-	private Corpus corpus;
+	protected Corpus corpus;
 
-	private List<Integer> postingList = new ArrayList<Integer>();
+	protected List<Integer> postingList = new ArrayList<Integer>();
 
 	public Term(int id, String token) {
 		this.id = id;

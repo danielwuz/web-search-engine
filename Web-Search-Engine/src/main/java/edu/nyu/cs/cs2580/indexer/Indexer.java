@@ -6,7 +6,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import edu.nyu.cs.cs2580.doc.Corpus;
-import edu.nyu.cs.cs2580.indexer.io.Loader;
+import edu.nyu.cs.cs2580.indexer.io.IndexReader;
+import edu.nyu.cs.cs2580.indexer.io.IndexWriter;
+import edu.nyu.cs.cs2580.indexer.loader.Loader;
 import edu.nyu.cs.cs2580.query.Query;
 import edu.nyu.cs.cs2580.searcher.AbstractSearcher;
 

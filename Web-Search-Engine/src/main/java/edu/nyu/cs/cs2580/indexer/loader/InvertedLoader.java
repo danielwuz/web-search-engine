@@ -1,4 +1,4 @@
-package edu.nyu.cs.cs2580.indexer.io;
+package edu.nyu.cs.cs2580.indexer.loader;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -9,10 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.nyu.cs.cs2580.doc.DocumentRaw;
-import edu.nyu.cs.cs2580.indexer.Filter;
-import edu.nyu.cs.cs2580.indexer.Filter.HtmlFilter;
-import edu.nyu.cs.cs2580.indexer.Filter.SpecialCharacterFilter;
-import edu.nyu.cs.cs2580.indexer.Filter.StemmingFilter;
+import edu.nyu.cs.cs2580.filter.Filter;
+import edu.nyu.cs.cs2580.filter.HtmlFilter;
+import edu.nyu.cs.cs2580.filter.SpecialCharacterFilter;
+import edu.nyu.cs.cs2580.filter.StemmingFilter;
 
 public class InvertedLoader extends Loader {
 
@@ -73,10 +73,10 @@ public class InvertedLoader extends Loader {
 			while ((line = reader.readLine()) != null) {
 				body.append(line);
 			}
+			return filter.process(body.toString());
 		} finally {
 			reader.close();
 		}
-		return filter.process(body.toString());
 	}
 
 	@Override
